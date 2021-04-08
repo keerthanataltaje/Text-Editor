@@ -1,15 +1,16 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import  java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.Buffer;
 
 
 public class Editor implements ActionListener {
     JTextArea textarea;
     JFrame frame;
     JMenuBar menubar;
+
     Editor()
     {
         //creating instance of JFrame with the name "editor"
@@ -20,6 +21,7 @@ public class Editor implements ActionListener {
 
         //set frame size
         frame.setSize(500,500);
+
 
         //Instantiating JMenuBar
         menubar = new JMenuBar();
@@ -68,6 +70,11 @@ public class Editor implements ActionListener {
         textarea = new JTextArea();
         //adding text area to the frame
         frame.add(textarea);
+        //add scroll bar to the frame
+        //scroll bar
+        JScrollPane scroll  = new JScrollPane(textarea);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        frame.add(scroll);
 
         //make the frame visible
         frame.setVisible(true);
@@ -77,14 +84,14 @@ public class Editor implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      String s = e.getActionCommand();
+        String s = e.getActionCommand();
         String path_of_file = null;
-      //System.out.println(s+" => "+" selected ");
+        //System.out.println(s+" => "+" selected ");
 
-        if(s.equals("New")){
+        if (s.equals("New")) {
             textarea.setText("");
         }
-        else if(s.equals("Save")) {
+        else if (s.equals("Save")) {
             //creating an object of JFileChooser class
             JFileChooser filechooser = new JFileChooser(String.valueOf(JFileChooser.FILES_AND_DIRECTORIES));
             int show = filechooser.showSaveDialog(null);
@@ -93,28 +100,62 @@ public class Editor implements ActionListener {
             if (show == JFileChooser.APPROVE_OPTION) {
                 path_of_file = filechooser.getSelectedFile().getAbsolutePath();
 
-            //System.out.println("The file path==> "+path_of_file);
+                //System.out.println("The file path==> "+path_of_file);
 
-            //attaching the file to FileWriter
-            try {
-                //creating a file writer
-                FileWriter filewriter = new FileWriter(path_of_file);
-                //creating buffered writer
-                BufferedWriter bufferedwriter = new BufferedWriter(filewriter);
-                bufferedwriter.write(textarea.getText());
-                bufferedwriter.flush();
-                bufferedwriter.close();
+                //attaching the file to FileWriter
+                try {
+                    //creating a file writer
+                    FileWriter filewriter = new FileWriter(path_of_file);
+                    //creating buffered writer
+                    BufferedWriter bufferedwriter = new BufferedWriter(filewriter);
+                    bufferedwriter.write(textarea.getText());
+                    bufferedwriter.flush();
+                    bufferedwriter.close();
 
-            } catch (Exception ex) {
-                System.out.println(ex);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            } else {
+                System.out.println("User has cancelled the action");
             }
+
         }
+        else if (s.equals("Open")) {
+            //creating an object of JFileChooser class
+            JFileChooser filechooser = new JFileChooser(String.valueOf(JFileChooser.FILES_AND_DIRECTORIES));
+            int show = filechooser.showOpenDialog(null);
+            String st="" ,text="";
+
+            //if user selects a file
+            if (show == JFileChooser.APPROVE_OPTION) {
+                path_of_file = filechooser.getSelectedFile().getAbsolutePath();
+
+
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(path_of_file));
+                    st = br.readLine();
+                    while ((st = br.readLine()) != null) {
+                        text = text + "\n" + st;
+                    }
+                    textarea.setText(text);
+                } catch (FileNotFoundException ex) {
+                    System.out.println("File not found");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
             else
             {
                 System.out.println("User has cancelled the action");
             }
 
+
+            
+                
+
         }
+
+
 
     }
     public static void main(String args[])
