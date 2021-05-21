@@ -163,6 +163,15 @@ public class Editor implements ActionListener {
         else if(s.equals("Paste")){
             textarea.paste();
         }
+        else if(s.equals("Print"))
+        {
+            try{
+                textarea.print();
+            }
+            catch(Exception e2){
+                JOptionPane.showMessageDialog(frame,"Error! Unable to print");
+            }
+        }
 
 
 
