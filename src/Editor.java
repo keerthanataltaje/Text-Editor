@@ -154,6 +154,15 @@ public class Editor implements ActionListener {
                 
 
         }
+        else if(s.equals("Cut")){
+            textarea.cut();
+        }
+        else if(s.equals("Copy")){
+            textarea.copy();
+        }
+        else if(s.equals("Paste")){
+            textarea.paste();
+        }
 
 
 
